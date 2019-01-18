@@ -1,72 +1,46 @@
-//select textarea
-let userInput;
-//select btn
-let submitBtn;
-//select result container
-let resultContainer;
-//# select wordCount
-let wordCountContainer;
-//# select letterCount
-let letterCountContainer;
+// select textarea
+const userInput = document.querySelector('#user-input');
+// select btn
+const submitBtn = document.querySelector('#submit-btn');
+// select result container
+const resultContainer = document.querySelector('#result-container');
+// # select wordCount
+const wordCountContainer = document.querySelector('#word-count');
+// # select letterCount
+const letterCountContainer = document.querySelector('#letter-count');
 
+const apiDomain = 'http://connect4.pienter.space';
 
 function getUserInput() {
-  //return value of userInput
+  // return value of userInput
+  const formData = {
+    text: userInput.value
+  };
+  return formData;
 }
 
-function textToWordArray(text) {
-  //return array of words
+function sendTextRequest(event) {
+  const request = event.target;
+    if (request.readyState === 4) {
+      const response = JSON.parse(request.responseText);
+      console.log('yay');
+      if (request.status >= 200 && request.status < 300) {
+        resultContainer.textContent = response.scrambled_text;
+      } else {
+        alert(response.error);
+      }
+    }
+  };
+
+function sendText(event) {
+  event.preventDefault();
+  const formData = getUserInput();
+  const request = new XMLHttpRequest();
+  request.addEventListener('readystatechange', sendTextRequest);
+  request.open('POST', apiDomain + '/api/scramble');
+  request.setRequestHeader('Content-Type', 'application/json');
+  request.send(JSON.stringify(formData));
 }
 
-function arrayToText(array) {
-}
-
-function getRandomNumber(max) {
-  //return random number between 0 and max (including 0 and excluding max)
-}
-
-function scrambleArray(oldArray) {
-  //return scrambled array
-}
-
-function scrambleText(text) {
-  // return scrambled text
-}
-
-function onClickScramble() {
-  // update textContent of resultContainer
-}
-
-function realTimeScramble(event) {
-  //## update textContent of resultContainer realtime
-}
-
-function getWordCount(text) {
-  //# return word count
-}
-
-function getLetterCount(text) {
-  //# return letter count
-}
-
-function updateWordCount(wordCount) {
-  //# update the Word Count
-}
-
-function updateLetterCount(letterCount) {
-  //# update the Letter Count
-}
-
-function updateCounts(event) {
-  //# update Word Count and Letter Count
-  let currentText = this.value;
-  // this when function is executed by event => event.target
-  // this.value == event.target.value
-}
-
-//add click event listener to submitBtn
-submitBtn.addEventListener("click", onClickScramble);
-//# add input event listener to userInput for counts
-userInput.addEventListener("input", updateCounts);
-//## add input event listener to userinput for realTimeScramble
-userInput.addEventListener("input", realTimeScramble);
+// add click event listener to submitBtn
+submitBtn.addEventListener('click', sendText);
