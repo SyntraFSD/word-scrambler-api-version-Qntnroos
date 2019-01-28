@@ -30,7 +30,7 @@ function sendTextRequest(event) {
         alert(response.error);
       }
     }
-  };
+  }
 
 function sendText(event) {
   event.preventDefault();
